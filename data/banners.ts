@@ -1,0 +1,140 @@
+/** Banner slots available across the public site — one editable banner per key. */
+
+export type BannerButtonStyle = "primary" | "outline";
+
+export type BannerButton = {
+  label: string;
+  href: string;
+  style: BannerButtonStyle;
+};
+
+export type BannerPageKey =
+  | "home"
+  | "properties"
+  | "construction"
+  | "construction-dream"
+  | "house-maps"
+  | "house-maps-custom"
+  | "interior"
+  | "about"
+  | "about-why"
+  | "contact"
+  | "projects"
+  | "projects-cta";
+
+export type BannerPageMeta = {
+  key: BannerPageKey;
+  label: string;
+  description: string;
+  /** Recommended upload size shown to admin */
+  recommendedSize: string;
+  aspectHint: string;
+  defaultImage: string;
+};
+
+export const BANNER_PAGES: BannerPageMeta[] = [
+  {
+    key: "home",
+    label: "Home — Main Hero",
+    description: "Full-width homepage banner (first screen).",
+    recommendedSize: "1920 × 900 px",
+    aspectHint: "Landscape ~16:7 or 21:9",
+    defaultImage: "/images/hero-banner.jpg",
+  },
+  {
+    key: "properties",
+    label: "Properties — Hero",
+    description: "Right-side image on Properties page hero.",
+    recommendedSize: "1200 × 900 px",
+    aspectHint: "Landscape ~4:3",
+    defaultImage: "/images/properties-hero.jpg",
+  },
+  {
+    key: "construction",
+    label: "Construction — Hero",
+    description: "Construction page top hero image.",
+    recommendedSize: "1920 × 800 px",
+    aspectHint: "Landscape ~12:5",
+    defaultImage: "/images/construction-hero.jpg",
+  },
+  {
+    key: "construction-dream",
+    label: "Construction — Dream Home Banner",
+    description: "Promo strip under Construction hero.",
+    recommendedSize: "1400 × 600 px",
+    aspectHint: "Landscape ~7:3",
+    defaultImage: "/images/construction-dream-home.jpg",
+  },
+  {
+    key: "house-maps",
+    label: "House Maps — Hero",
+    description: "House Maps page top hero.",
+    recommendedSize: "1920 × 800 px",
+    aspectHint: "Landscape ~12:5",
+    defaultImage: "/images/house-plans-hero.jpg",
+  },
+  {
+    key: "house-maps-custom",
+    label: "House Maps — Custom Plan Banner",
+    description: "Custom plan CTA banner on House Maps.",
+    recommendedSize: "1200 × 700 px",
+    aspectHint: "Landscape ~12:7",
+    defaultImage: "/images/custom-plan-model.jpg",
+  },
+  {
+    key: "interior",
+    label: "Interior Design — Hero",
+    description: "Interior Design page promo / hero.",
+    recommendedSize: "1920 × 800 px",
+    aspectHint: "Landscape ~12:5",
+    defaultImage: "/images/interior-hero.jpg",
+  },
+  {
+    key: "about",
+    label: "About Us — Hero",
+    description: "About page top hero image.",
+    recommendedSize: "1200 × 900 px",
+    aspectHint: "Landscape ~4:3",
+    defaultImage: "/images/projects-hero.jpg",
+  },
+  {
+    key: "about-why",
+    label: "About Us — Why Choose Us Banner",
+    description: "Dark green banner with house photo on About page.",
+    recommendedSize: "1000 × 700 px",
+    aspectHint: "Landscape ~10:7",
+    defaultImage: "/images/listing-house-dusk.jpg",
+  },
+  {
+    key: "contact",
+    label: "Contact — Hero",
+    description: "Contact page top hero image.",
+    recommendedSize: "1200 × 900 px",
+    aspectHint: "Landscape ~4:3",
+    defaultImage: "/images/projects-hero.jpg",
+  },
+  {
+    key: "projects",
+    label: "Projects — Hero",
+    description: "Projects page top hero.",
+    recommendedSize: "1920 × 800 px",
+    aspectHint: "Landscape ~12:5",
+    defaultImage: "/images/projects-hero.jpg",
+  },
+  {
+    key: "projects-cta",
+    label: "Projects — CTA Banner",
+    description: "Bottom / mid CTA banner on Projects page.",
+    recommendedSize: "1400 × 600 px",
+    aspectHint: "Landscape ~7:3",
+    defaultImage: "/images/project-cta-house.jpg",
+  },
+];
+
+export function getBannerPageMeta(key: string): BannerPageMeta | undefined {
+  return BANNER_PAGES.find((p) => p.key === key);
+}
+
+export function isBannerPageKey(value: string): value is BannerPageKey {
+  return BANNER_PAGES.some((p) => p.key === value);
+}

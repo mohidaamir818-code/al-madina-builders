@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -23,6 +21,7 @@
 # misc
 .DS_Store
 *.pem
+Thumbs.db
 
 # debug
 npm-debug.log*
@@ -30,11 +29,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files
+.env
+.env*.local
 
-# vercel
-.vercel
+# admin local store (runtime mutations)
+/data/admin-properties.store.json
+/data/admin-house-maps.store.json
+/data/admin-interiors.store.json
+/data/feedbacks.store.json
+/data/deal-subscribers.store.json
+/data/admin-select-options.json
+/data/.admin-password.hash
 
 # typescript
 *.tsbuildinfo

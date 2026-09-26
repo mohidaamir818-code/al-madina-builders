@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <circle cx="80" cy="80" r="80" fill="#14532D"/>
+  <circle cx="80" cy="80" r="68" fill="#166534"/>
+  <path d="M44 108V56l36-16 36 16v52H44z" fill="#F8FAFC"/>
+  <path d="M56 108V64h48v44" fill="#16A34A"/>
+  <rect x="72" y="80" width="16" height="28" fill="#F8FAFC"/>
+  <text x="80" y="48" text-anchor="middle" fill="#FACC15" font-family="Arial, sans-serif" font-size="13" font-weight="700">DHA</text>
+</svg>

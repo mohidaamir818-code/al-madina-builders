@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <circle cx="80" cy="80" r="80" fill="#0B3B1E"/>
+  <circle cx="80" cy="80" r="68" fill="#14532D"/>
+  <path d="M80 28l36 16v28c0 28-16 48-36 56-20-8-36-28-36-56V44z" fill="#FACC15"/>
+  <path d="M80 38l26 12v22c0 22-12 38-26 44-14-6-26-22-26-44V50z" fill="#0B3B1E"/>
+  <text x="80" y="90" text-anchor="middle" fill="#FACC15" font-family="Arial, sans-serif" font-size="22" font-weight="700">DHA</text>
+  <text x="80" y="110" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="11">MULTAN</text>
+</svg>

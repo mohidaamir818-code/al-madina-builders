@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Hidden admin entry — never crawl or index
+Disallow: /al-madina-builders-entry-of-product-management
+Disallow: /al-madina-builders-entry-of-product-management/
+Disallow: /api/admin/

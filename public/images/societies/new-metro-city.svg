@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <circle cx="80" cy="80" r="80" fill="#7F1D1D"/>
+  <circle cx="80" cy="80" r="68" fill="#991B1B"/>
+  <rect x="38" y="70" width="22" height="46" fill="#FECACA"/>
+  <rect x="66" y="52" width="28" height="64" fill="#FEE2E2"/>
+  <rect x="100" y="64" width="22" height="52" fill="#FECACA"/>
+  <path d="M30 118h100" stroke="#FACC15" stroke-width="6"/>
+  <text x="80" y="46" text-anchor="middle" fill="#FACC15" font-family="Arial, sans-serif" font-size="12" font-weight="700">NMC</text>
+</svg>
