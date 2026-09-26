@@ -160,43 +160,6 @@ export function InteriorDesignBoard({ designs }: InteriorDesignBoardProps) {
           </div>
         ) : null}
 
-        {/* Hero promo banner */}
-        <section className="relative mt-5 overflow-hidden rounded-[10px]">
-          <div className="relative min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
-            <Image
-              src="/images/interior-hero.jpg"
-              alt="Modern living room interior"
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent sm:from-white/90 sm:via-white/55 sm:to-black/10" />
-            <div className="relative z-10 flex h-full min-h-[220px] flex-col justify-center px-5 py-8 sm:min-h-[260px] sm:px-8 lg:min-h-[300px] lg:px-10">
-              <div className="max-w-md">
-                <p className="text-sm text-muted">Turn Your Space Into</p>
-                <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-brand sm:text-4xl lg:text-5xl">
-                  Your Dream Home
-                </h1>
-                <p className="mt-3 max-w-sm text-sm leading-6 text-muted">
-                  Explore top interior design ideas, expert designers and complete solutions for every room.
-                </p>
-                <a
-                  href="#featured-designs"
-                  className="mt-5 inline-flex h-11 items-center justify-center rounded-[10px] bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-deep"
-                >
-                  Explore Designs →
-                </a>
-              </div>
-              <p className="font-script pointer-events-none absolute right-5 bottom-6 hidden text-2xl leading-[1.05] text-white drop-shadow md:block lg:right-10 lg:bottom-10 lg:text-3xl">
-                Beautiful Spaces
-                <br />
-                Better Living
-              </p>
-            </div>
-          </div>
-        </section>
-
         {/* Room categories */}
         <div className="no-scrollbar mt-6 flex gap-3 overflow-x-auto pb-1 sm:grid sm:grid-cols-4 sm:overflow-visible lg:grid-cols-7">
           {interiorCategories.map((item) => {

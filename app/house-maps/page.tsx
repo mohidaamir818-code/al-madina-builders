@@ -24,7 +24,10 @@ export default async function HouseMapsPage() {
     console.warn("[house-maps page] failed to load maps:", err);
   }
 
-  const banner = await getBannerByPageKey("house-maps").catch(() => null);
+  const [banner, customBanner] = await Promise.all([
+    getBannerByPageKey("house-maps").catch(() => null),
+    getBannerByPageKey("house-maps-custom").catch(() => null),
+  ]);
 
   const plans: HousePlan[] = maps.map((m) => ({
     id: m.slug,
@@ -49,7 +52,7 @@ export default async function HouseMapsPage() {
       </header>
       <main className="bg-[#F3F6F4]">
         <HousePlansHero banner={banner} />
-        <HousePlansBoard plans={plans} />
+        <HousePlansBoard plans={plans} customBanner={customBanner} />
       </main>
       <Footer />
     </>

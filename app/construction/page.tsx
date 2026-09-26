@@ -21,9 +21,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ConstructionPage() {
-  const [projects, banner] = await Promise.all([
+  const [projects, banner, dreamBanner] = await Promise.all([
     getPublishedConstructionProjects(),
     getBannerByPageKey("construction").catch(() => null),
+    getBannerByPageKey("construction-dream").catch(() => null),
   ]);
 
   return (
@@ -36,7 +37,7 @@ export default async function ConstructionPage() {
         <ConstructionHero banner={banner} />
         <ProjectsBoard projects={projects} />
         <div className="mt-12">
-          <DreamHomeBanner />
+          <DreamHomeBanner banner={dreamBanner} />
           <StepsSection />
           <ServiceCard />
           <WhyChooseSection />

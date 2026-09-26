@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Topbar } from "@/components/Topbar";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { PageBanner } from "@/components/banners/PageBanner";
 import { InteriorDesignBoard } from "@/components/interior/InteriorDesignBoard";
 import { getPublishedInteriors } from "@/lib/admin/interiorStore";
+import { getBannerByPageKey } from "@/lib/admin/bannerStore";
 import type { InteriorCategory, InteriorDesign } from "@/data/interiorDesigns";
 
 export const metadata: Metadata = {
@@ -21,6 +23,8 @@ export default async function InteriorDesignPage() {
   } catch (err) {
     console.warn("[interior-design page] failed to load designs:", err);
   }
+
+  const banner = await getBannerByPageKey("interior").catch(() => null);
 
   const designs: InteriorDesign[] = rows.map((item) => ({
     id: item.slug,
@@ -43,6 +47,12 @@ export default async function InteriorDesignPage() {
         <Navbar />
       </header>
       <main className="bg-[#F3F6F4]">
+        <PageBanner
+          banner={banner}
+          fallbackImage="/images/interior-hero.jpg"
+          alt="Interior Design page banner"
+          priority
+        />
         <InteriorDesignBoard designs={designs} />
       </main>
       <Footer />

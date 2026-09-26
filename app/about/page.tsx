@@ -20,7 +20,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
-  const banner = await getBannerByPageKey("about").catch(() => null);
+  const [banner, whyBanner] = await Promise.all([
+    getBannerByPageKey("about").catch(() => null),
+    getBannerByPageKey("about-why").catch(() => null),
+  ]);
 
   return (
     <>
@@ -34,7 +37,7 @@ export default async function AboutPage() {
         <PecLicenceSection />
         <DirectorSection />
         <ValuesSection />
-        <WhyChooseBanner />
+        <WhyChooseBanner banner={whyBanner} />
         <CTAStrip />
       </main>
       <Footer />

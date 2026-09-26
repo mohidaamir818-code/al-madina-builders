@@ -2,17 +2,19 @@
 
 import { Home } from "lucide-react";
 import type { HousePlan } from "@/data/housePlans";
+import type { SiteBanner } from "@/lib/admin/bannerStore";
 import { Container } from "@/components/ui/Container";
 import { PlanCard } from "@/components/house-maps/PlanCard";
 import { CustomPlanBanner } from "@/components/house-maps/CustomPlanBanner";
 
 type HousePlansBoardProps = {
   plans: HousePlan[];
+  customBanner?: SiteBanner | null;
 };
 
-export function HousePlansBoard({ plans }: HousePlansBoardProps) {
+export function HousePlansBoard({ plans, customBanner }: HousePlansBoardProps) {
   return (
-    <div className="relative z-20 -mt-6 pb-14">
+    <div className="relative z-20 pb-14 pt-8">
       <Container>
         <div className="mt-2 flex items-start gap-2">
           <Home className="mt-0.5 h-5 w-5 text-primary" aria-hidden="true" />
@@ -35,7 +37,7 @@ export function HousePlansBoard({ plans }: HousePlansBoardProps) {
         )}
 
         <div className="mt-8">
-          <CustomPlanBanner />
+          <CustomPlanBanner banner={customBanner} />
         </div>
       </Container>
     </div>

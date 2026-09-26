@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { showcaseProjects, type ShowcaseProject } from "@/data/showcaseProjects";
+import type { SiteBanner } from "@/lib/admin/bannerStore";
 import { Container } from "@/components/ui/Container";
 import { ProjectFilter } from "@/components/projects/ProjectFilter";
 import { ProjectCard } from "@/components/projects/ProjectCard";
@@ -16,7 +17,11 @@ function matchesPrice(project: ShowcaseProject, price: string) {
   return true;
 }
 
-export function ProjectsBoard() {
+type ProjectsBoardProps = {
+  ctaBanner?: SiteBanner | null;
+};
+
+export function ProjectsBoard({ ctaBanner }: ProjectsBoardProps) {
   const [type, setType] = useState("All Types");
   const [location, setLocation] = useState("All Locations");
   const [price, setPrice] = useState("Any Price");
@@ -37,7 +42,7 @@ export function ProjectsBoard() {
   }, [applied]);
 
   return (
-    <div className="relative z-20 -mt-6 pb-4">
+    <div className="relative z-20 pb-4 pt-8">
       <Container>
         <ProjectFilter
           type={type}
@@ -68,7 +73,7 @@ export function ProjectsBoard() {
         )}
 
         <div className="mt-10">
-          <ProjectCTABanner />
+          <ProjectCTABanner banner={ctaBanner} />
         </div>
       </Container>
     </div>

@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { ProjectsHero } from "@/components/projects/ProjectsHero";
 import { ProjectsBoard } from "@/components/projects/ProjectsBoard";
 import { TrustStrip } from "@/components/projects/TrustStrip";
+import { getBannerByPageKey } from "@/lib/admin/bannerStore";
 
 export const metadata: Metadata = {
   title: "Our Projects | Al Madina Builders Multan",
@@ -12,7 +13,14 @@ export const metadata: Metadata = {
     "Explore ongoing and upcoming residential and commercial projects by Al Madina Builders in Multan.",
 };
 
-export default function ProjectsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ProjectsPage() {
+  const [banner, ctaBanner] = await Promise.all([
+    getBannerByPageKey("projects").catch(() => null),
+    getBannerByPageKey("projects-cta").catch(() => null),
+  ]);
+
   return (
     <>
       <header>
@@ -20,8 +28,8 @@ export default function ProjectsPage() {
         <Navbar />
       </header>
       <main className="bg-[#F3F6F4]">
-        <ProjectsHero />
-        <ProjectsBoard />
+        <ProjectsHero banner={banner} />
+        <ProjectsBoard ctaBanner={ctaBanner} />
         <TrustStrip />
       </main>
       <Footer />

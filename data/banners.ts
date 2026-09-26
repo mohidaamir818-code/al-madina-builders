@@ -49,7 +49,7 @@ export const BANNER_PAGES: BannerPageMeta[] = [
   {
     key: "properties",
     label: "Properties — Hero",
-    description: "Right-side image on Properties page hero.",
+    description: "Full-width Properties page banner (mobile vertical + laptop wide).",
     recommendedSize: "1200 × 900 px",
     aspectHint: "Laptop landscape ~4:3",
     mobileRecommendedSize: "1080 × 1440 px",
@@ -59,7 +59,7 @@ export const BANNER_PAGES: BannerPageMeta[] = [
   {
     key: "construction",
     label: "Construction — Hero",
-    description: "Construction page top hero image.",
+    description: "Full-width Construction page banner (mobile vertical + laptop wide).",
     recommendedSize: "1920 × 800 px",
     aspectHint: "Laptop landscape ~12:5",
     mobileRecommendedSize: "1080 × 1440 px",
