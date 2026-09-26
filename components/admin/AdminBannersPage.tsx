@@ -316,7 +316,7 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
                   <p className="mt-0.5 text-muted">{meta.mobileAspectHint}</p>
                   <p className="mt-1 text-muted">Optional — blank ho to laptop wali image mobile pe use hogi.</p>
                 </div>
-                <div className="relative mx-auto mt-3 aspect-[4/5] max-w-[220px] overflow-hidden rounded border border-line bg-[#F3F6F4]">
+                <div className="relative mx-auto mt-3 aspect-[3/4] max-w-[200px] overflow-hidden rounded border border-line bg-[#F3F6F4]">
                   {mobilePreview ? (
                     <Image
                       src={mobilePreview}

@@ -73,7 +73,7 @@ export function HousePlansHero({ banner }: HousePlansHeroProps) {
           ) : null}
           {buttons.length ? <BannerCtaButtons buttons={buttons} className="mt-6" /> : null}
         </div>
-        <div className="relative mt-8 aspect-[4/5] overflow-hidden rounded sm:aspect-[16/10] lg:hidden">
+        <div className="relative mt-8 aspect-[3/4] w-full overflow-hidden rounded lg:hidden">
           <Image
             src={mobile}
             alt="House Maps page banner"
