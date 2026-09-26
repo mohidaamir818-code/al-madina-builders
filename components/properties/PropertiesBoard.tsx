@@ -98,7 +98,7 @@ export function PropertiesBoard({ listings }: PropertiesBoardProps) {
   };
 
   return (
-    <div className="relative z-20 -mt-8 pb-16">
+    <div className="relative z-20 pb-16 pt-6 sm:pt-8">
       <Container>
         <SearchBar
           query={query}

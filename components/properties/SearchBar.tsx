@@ -21,7 +21,7 @@ type SearchBarProps = {
 };
 
 const fieldClass =
-  "h-11 w-full rounded border border-line bg-white px-3 text-sm text-ink outline-none transition-all duration-200 focus:border-primary";
+  "h-10 w-full rounded border border-line bg-white px-2.5 text-xs text-ink outline-none transition-all duration-200 focus:border-primary sm:h-11 sm:px-3 sm:text-sm lg:h-11";
 
 export function SearchBar({
   query,
@@ -43,45 +43,63 @@ export function SearchBar({
         event.preventDefault();
         onSubmit();
       }}
-      className="grid grid-cols-1 gap-3 rounded border border-line bg-white p-3 shadow-sm sm:p-4 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_auto]"
+      className="rounded border border-line bg-white p-2.5 shadow-sm sm:p-4"
     >
-      <label className="relative">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+      {/* Search — full width */}
+      <label className="relative block">
+        <Search
+          className="absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted sm:left-3 sm:h-4 sm:w-4"
+          aria-hidden="true"
+        />
         <input
           value={query}
           onChange={(event) => onQuery(event.target.value)}
-          placeholder="Search by location, society or property type..."
-          className={`${fieldClass} pl-9`}
+          placeholder="Search location, society..."
+          className={`${fieldClass} pl-8 sm:pl-9`}
           aria-label="Search properties"
         />
       </label>
-      <select value={type} onChange={(event) => onType(event.target.value)} className={fieldClass} aria-label="Property type">
-        {propertyTypeOptions.map((option) => (
-          <option key={option}>{option}</option>
-        ))}
-      </select>
-      <select
-        value={location}
-        onChange={(event) => onLocation(event.target.value)}
-        className={fieldClass}
-        aria-label="Location"
-      >
-        {locationChoices.map((option) => (
-          <option key={option}>{option}</option>
-        ))}
-      </select>
-      <select value={price} onChange={(event) => onPrice(event.target.value)} className={fieldClass} aria-label="Price range">
-        {priceRangeOptions.map((option) => (
-          <option key={option}>{option}</option>
-        ))}
-      </select>
-      <button
-        type="submit"
-        className="inline-flex h-11 items-center justify-center gap-2 rounded bg-primary px-6 text-sm font-semibold text-white transition-all duration-200 hover:bg-primary-hover"
-      >
-        <Search className="h-4 w-4" aria-hidden="true" />
-        Search
-      </button>
+
+      {/* Mobile: horizontal scroll filters | Laptop: same row grid */}
+      <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto pb-0.5 lg:mt-3 lg:grid lg:grid-cols-[1fr_1fr_1fr_auto] lg:gap-3 lg:overflow-visible">
+        <select
+          value={type}
+          onChange={(event) => onType(event.target.value)}
+          className={`${fieldClass} w-[7.5rem] shrink-0 lg:w-full`}
+          aria-label="Property type"
+        >
+          {propertyTypeOptions.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+        <select
+          value={location}
+          onChange={(event) => onLocation(event.target.value)}
+          className={`${fieldClass} w-[8.5rem] shrink-0 lg:w-full`}
+          aria-label="Location"
+        >
+          {locationChoices.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+        <select
+          value={price}
+          onChange={(event) => onPrice(event.target.value)}
+          className={`${fieldClass} w-[8.5rem] shrink-0 lg:w-full`}
+          aria-label="Price range"
+        >
+          {priceRangeOptions.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded bg-primary px-4 text-xs font-semibold text-white transition-all duration-200 hover:bg-primary-hover sm:h-11 sm:gap-2 sm:px-6 sm:text-sm lg:h-11"
+        >
+          <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          Search
+        </button>
+      </div>
     </form>
   );
 }
