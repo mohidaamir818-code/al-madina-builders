@@ -28,8 +28,8 @@ export function Footer({
   const footerServices = serviceLinks ?? services.map((service) => ({ title: service.title, href: "/contact" }));
   return (
     <footer className="bg-brand text-white">
-      <Container className="grid grid-cols-2 gap-8 py-12 md:grid-cols-2 lg:grid-cols-4 lg:py-16">
-        <div className="col-span-2 lg:col-span-1">
+      <Container className="grid grid-cols-1 gap-8 py-10 sm:grid-cols-2 sm:py-12 lg:grid-cols-4 lg:py-16">
+        <div className="lg:col-span-1">
           <a href="/" className="inline-flex items-center gap-2.5">
             <Image
               src="/logo-al-madina.png"
@@ -66,7 +66,7 @@ export function Footer({
           </ul>
         </div>
 
-        <div className="col-span-2 md:col-span-1">
+        <div>
           <h3 className="text-sm font-semibold">Contact Us</h3>
           <ul className="mt-4 space-y-3 text-sm text-white/70">
             <li className="flex items-center gap-2">
@@ -82,8 +82,8 @@ export function Footer({
               </a>
             </li>
             <li className="flex items-start gap-2">
-              <MapPin className="mt-0.5 h-4 w-4 text-primary-bright" aria-hidden="true" />
-              <span>{site.address}</span>
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary-bright" aria-hidden="true" />
+              <span className="min-w-0 break-words">{site.address}</span>
             </li>
           </ul>
           <div className="mt-5 flex items-center gap-2">

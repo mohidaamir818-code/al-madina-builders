@@ -32,11 +32,11 @@ export function HouseMaps({ maps }: HouseMapsProps) {
             House maps will appear here once published from the admin panel.
           </p>
         ) : (
-          <div className="no-scrollbar mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4">
+          <div className="no-scrollbar mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-4">
             {maps.map((map) => (
               <article
                 key={map.id}
-                className="w-[82%] shrink-0 snap-start overflow-hidden rounded-md border border-line bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:w-auto"
+                className="w-[88%] max-w-[320px] shrink-0 snap-start overflow-hidden rounded-md border border-line bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:w-auto sm:max-w-none"
               >
                 <Link href={`/house-maps/${map.slug}`} className="relative block aspect-[4/3]">
                   <Image

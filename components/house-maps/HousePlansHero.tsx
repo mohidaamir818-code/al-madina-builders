@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Compass, Home, LayoutGrid, Lightbulb } from "lucide-react";
 import type { SiteBanner } from "@/lib/admin/bannerStore";
 import { BannerCtaButtons } from "@/components/banners/BannerCtaButtons";
+import { resolveBannerImages } from "@/components/banners/BannerImages";
 import { Container } from "@/components/ui/Container";
 
 const badges = [
@@ -17,7 +18,7 @@ type HousePlansHeroProps = {
 };
 
 export function HousePlansHero({ banner }: HousePlansHeroProps) {
-  const image = banner?.imageUrl || "/images/house-plans-hero.jpg";
+  const { desktop, mobile } = resolveBannerImages(banner, "/images/house-plans-hero.jpg");
   const title = banner?.title?.trim() || "HOUSE PLANS";
   const showDefaultAccent = !banner?.title?.trim();
   const subtitle =
@@ -29,13 +30,13 @@ export function HousePlansHero({ banner }: HousePlansHeroProps) {
     <section className="relative isolate overflow-hidden bg-[#0B3B1E]">
       <div className="absolute inset-y-0 right-0 hidden w-[48%] lg:block">
         <Image
-          src={image}
+          src={desktop}
           alt="House Maps page banner"
           fill
           priority
           sizes="48vw"
           className="object-cover"
-          unoptimized={image.includes("supabase") || image.startsWith("data:")}
+          unoptimized={desktop.includes("supabase") || desktop.startsWith("data:")}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B3B1E] via-[#0B3B1E]/70 to-transparent" />
       </div>
@@ -72,14 +73,14 @@ export function HousePlansHero({ banner }: HousePlansHeroProps) {
           ) : null}
           {buttons.length ? <BannerCtaButtons buttons={buttons} className="mt-6" /> : null}
         </div>
-        <div className="relative mt-8 aspect-[16/10] overflow-hidden rounded lg:hidden">
+        <div className="relative mt-8 aspect-[4/5] overflow-hidden rounded sm:aspect-[16/10] lg:hidden">
           <Image
-            src={image}
+            src={mobile}
             alt="House Maps page banner"
             fill
             sizes="100vw"
             className="object-cover"
-            unoptimized={image.includes("supabase") || image.startsWith("data:")}
+            unoptimized={mobile.includes("supabase") || mobile.startsWith("data:")}
           />
         </div>
       </Container>

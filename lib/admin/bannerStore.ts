@@ -19,6 +19,7 @@ export type SiteBanner = {
   eyebrow: string;
   scriptText: string;
   imageUrl: string;
+  mobileImageUrl: string;
   buttons: BannerButton[];
   isActive: boolean;
   createdAt: string;
@@ -32,6 +33,7 @@ export type SiteBannerInput = {
   eyebrow?: string;
   scriptText?: string;
   imageUrl?: string;
+  mobileImageUrl?: string;
   buttons?: BannerButton[];
   isActive?: boolean;
 };
@@ -44,6 +46,7 @@ type DbRow = {
   eyebrow: string;
   script_text: string;
   image_url: string;
+  mobile_image_url?: string | null;
   buttons: BannerButton[] | unknown;
   is_active: boolean;
   created_at: string;
@@ -76,6 +79,7 @@ function normalize(raw: Partial<SiteBanner> & { id: string; pageKey: BannerPageK
     eyebrow: (raw.eyebrow || "").trim(),
     scriptText: (raw.scriptText || "").trim(),
     imageUrl: (raw.imageUrl || meta?.defaultImage || "").trim(),
+    mobileImageUrl: (raw.mobileImageUrl || "").trim(),
     buttons: normalizeButtons(raw.buttons),
     isActive: raw.isActive !== false,
     createdAt: raw.createdAt || new Date().toISOString(),
@@ -93,6 +97,7 @@ function fromDb(row: DbRow): SiteBanner | null {
     eyebrow: row.eyebrow,
     scriptText: row.script_text,
     imageUrl: row.image_url,
+    mobileImageUrl: row.mobile_image_url || "",
     buttons: Array.isArray(row.buttons) ? (row.buttons as BannerButton[]) : [],
     isActive: row.is_active,
     createdAt: row.created_at,
@@ -109,6 +114,7 @@ function toDb(item: SiteBanner) {
     eyebrow: item.eyebrow,
     script_text: item.scriptText,
     image_url: item.imageUrl,
+    mobile_image_url: item.mobileImageUrl,
     buttons: item.buttons,
     is_active: item.isActive,
     created_at: item.createdAt,
@@ -182,6 +188,10 @@ export async function upsertSiteBanner(input: SiteBannerInput): Promise<SiteBann
       input.imageUrl !== undefined
         ? input.imageUrl
         : existing?.imageUrl || meta?.defaultImage || "",
+    mobileImageUrl:
+      input.mobileImageUrl !== undefined
+        ? input.mobileImageUrl
+        : existing?.mobileImageUrl || "",
     buttons: input.buttons !== undefined ? input.buttons : existing?.buttons || [],
     isActive: input.isActive !== undefined ? input.isActive : existing?.isActive ?? true,
     createdAt: existing?.createdAt || now,

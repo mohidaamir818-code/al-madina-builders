@@ -7,8 +7,10 @@ import {
   ArrowLeft,
   ImagePlus,
   Loader2,
+  Monitor,
   Plus,
   Save,
+  Smartphone,
   Trash2,
   X,
 } from "lucide-react";
@@ -25,9 +27,12 @@ type Draft = {
   eyebrow: string;
   scriptText: string;
   imageUrl: string;
+  mobileImageUrl: string;
   buttons: BannerButton[];
   isActive: boolean;
 };
+
+type UploadTarget = "desktop" | "mobile";
 
 function emptyDraft(pageKey: BannerPageKey): Draft {
   const meta = BANNER_PAGES.find((p) => p.key === pageKey)!;
@@ -38,6 +43,7 @@ function emptyDraft(pageKey: BannerPageKey): Draft {
     eyebrow: "",
     scriptText: "",
     imageUrl: meta.defaultImage,
+    mobileImageUrl: "",
     buttons: [{ label: "Learn More", href: "/", style: "primary" }],
     isActive: true,
   };
@@ -51,6 +57,7 @@ function fromBanner(b: SiteBanner): Draft {
     eyebrow: b.eyebrow,
     scriptText: b.scriptText,
     imageUrl: b.imageUrl,
+    mobileImageUrl: b.mobileImageUrl || "",
     buttons: b.buttons.length ? b.buttons : [],
     isActive: b.isActive,
   };
@@ -71,9 +78,10 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
   const [selectedKey, setSelectedKey] = useState<BannerPageKey>("home");
   const [draft, setDraft] = useState<Draft>(() => emptyDraft("home"));
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState<UploadTarget | null>(null);
   const [toast, setToast] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const desktopInputRef = useRef<HTMLInputElement>(null);
+  const mobileInputRef = useRef<HTMLInputElement>(null);
 
   const savedMap = useMemo(() => {
     const map = new Map<string, SiteBanner>();
@@ -93,19 +101,22 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
     window.setTimeout(() => setToast(""), 2800);
   };
 
-  const onUpload = async (files: FileList | null) => {
+  const onUpload = async (target: UploadTarget, files: FileList | null) => {
     const file = files?.[0];
     if (!file) return;
-    setUploading(true);
+    setUploading(target);
     try {
       const url = await uploadImage(file);
-      setDraft((d) => ({ ...d, imageUrl: url }));
-      showToast("Image uploaded");
+      setDraft((d) =>
+        target === "desktop" ? { ...d, imageUrl: url } : { ...d, mobileImageUrl: url },
+      );
+      showToast(target === "desktop" ? "Laptop banner uploaded" : "Mobile banner uploaded");
     } catch (err) {
       showToast(err instanceof Error ? err.message : "Upload failed");
     } finally {
-      setUploading(false);
-      if (inputRef.current) inputRef.current.value = "";
+      setUploading(null);
+      if (target === "desktop" && desktopInputRef.current) desktopInputRef.current.value = "";
+      if (target === "mobile" && mobileInputRef.current) mobileInputRef.current.value = "";
     }
   };
 
@@ -134,7 +145,7 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
   const save = async (e?: FormEvent) => {
     e?.preventDefault();
     if (!draft.imageUrl.trim()) {
-      showToast("Banner image required");
+      showToast("Laptop banner image required");
       return;
     }
     const buttons = draft.buttons.filter((b) => b.label.trim() && b.href.trim());
@@ -184,6 +195,8 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
     }
   };
 
+  const mobilePreview = draft.mobileImageUrl.trim() || draft.imageUrl;
+
   return (
     <AdminShell messageCount={0}>
       <div className="space-y-4 px-4 py-4">
@@ -197,12 +210,11 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
           </Link>
           <div>
             <h1 className="text-lg font-bold text-ink">Manage Banners</h1>
-            <p className="text-xs text-muted">Har page ka banner, image aur buttons yahan se control karein.</p>
+            <p className="text-xs text-muted">Laptop aur mobile ke liye alag images upload karein.</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
-          {/* Page list */}
           <aside className="rounded-md border border-line bg-white p-2 shadow-sm">
             <p className="px-2 py-2 text-[11px] font-semibold tracking-wide text-muted uppercase">
               Pages with banners
@@ -210,6 +222,7 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
             <ul className="max-h-[70vh] space-y-1 overflow-y-auto">
               {BANNER_PAGES.map((page) => {
                 const hasCustom = savedMap.has(page.key);
+                const hasMobile = Boolean(savedMap.get(page.key)?.mobileImageUrl);
                 return (
                   <li key={page.key}>
                     <button
@@ -224,7 +237,8 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
                     >
                       <span className="block">{page.label}</span>
                       <span className="mt-0.5 block text-[11px] font-normal text-muted">
-                        {hasCustom ? "Custom uploaded" : "Default image"} · {page.recommendedSize}
+                        {hasCustom ? "Custom" : "Default"}
+                        {hasMobile ? " · Mobile set" : ""} · {page.recommendedSize}
                       </span>
                     </button>
                   </li>
@@ -233,56 +247,121 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
             </ul>
           </aside>
 
-          {/* Editor */}
           <form onSubmit={save} className="space-y-4 rounded-md border border-line bg-white p-4 shadow-sm sm:p-5">
             <div>
               <h2 className="text-base font-bold text-ink">{meta.label}</h2>
               <p className="mt-1 text-sm text-muted">{meta.description}</p>
-              <div className="mt-3 rounded border border-dashed border-primary/40 bg-[#F3FBF5] px-3 py-2.5 text-xs text-ink">
-                <p className="font-semibold text-primary">Best image size</p>
-                <p className="mt-1">
-                  <span className="font-bold">{meta.recommendedSize}</span>
-                  <span className="text-muted"> — {meta.aspectHint}</span>
-                </p>
-                <p className="mt-1 text-muted">JPG / PNG / WEBP, max 10 MB. Wide landscape best dikhega.</p>
-              </div>
             </div>
 
-            {/* Image upload */}
-            <div>
-              <div className="relative aspect-[16/7] overflow-hidden rounded border border-line bg-[#F3F6F4]">
-                {draft.imageUrl ? (
-                  <Image
-                    src={draft.imageUrl}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    unoptimized={draft.imageUrl.includes("supabase") || draft.imageUrl.startsWith("data:")}
-                    sizes="(max-width: 1024px) 100vw, 700px"
-                  />
-                ) : null}
-                {uploading ? (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <Loader2 className="h-8 w-8 animate-spin text-white" />
-                  </div>
-                ) : null}
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              {/* Laptop */}
+              <div className="rounded border border-line p-3">
+                <div className="mb-2 flex items-center gap-2 text-sm font-bold text-ink">
+                  <Monitor className="h-4 w-4 text-primary" />
+                  Laptop / Desktop banner
+                </div>
+                <div className="rounded border border-dashed border-primary/40 bg-[#F3FBF5] px-3 py-2 text-xs text-ink">
+                  <p>
+                    Best size: <span className="font-bold">{meta.recommendedSize}</span>
+                  </p>
+                  <p className="mt-0.5 text-muted">{meta.aspectHint}</p>
+                </div>
+                <div className="relative mt-3 aspect-[16/7] overflow-hidden rounded border border-line bg-[#F3F6F4]">
+                  {draft.imageUrl ? (
+                    <Image
+                      src={draft.imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      unoptimized={
+                        draft.imageUrl.includes("supabase") || draft.imageUrl.startsWith("data:")
+                      }
+                      sizes="400px"
+                    />
+                  ) : null}
+                  {uploading === "desktop" ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                      <Loader2 className="h-8 w-8 animate-spin text-white" />
+                    </div>
+                  ) : null}
+                </div>
                 <button
                   type="button"
-                  disabled={uploading}
-                  onClick={() => inputRef.current?.click()}
-                  className="inline-flex h-10 items-center gap-2 rounded bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+                  disabled={uploading !== null}
+                  onClick={() => desktopInputRef.current?.click()}
+                  className="mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
                 >
                   <ImagePlus className="h-4 w-4" />
-                  {uploading ? "Uploading…" : "Upload Banner Image"}
+                  {uploading === "desktop" ? "Uploading…" : "Upload Laptop Banner"}
                 </button>
                 <input
-                  ref={inputRef}
+                  ref={desktopInputRef}
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
                   className="hidden"
-                  onChange={(e) => void onUpload(e.target.files)}
+                  onChange={(e) => void onUpload("desktop", e.target.files)}
+                />
+              </div>
+
+              {/* Mobile */}
+              <div className="rounded border border-line p-3">
+                <div className="mb-2 flex items-center gap-2 text-sm font-bold text-ink">
+                  <Smartphone className="h-4 w-4 text-primary" />
+                  Mobile / Phone banner
+                </div>
+                <div className="rounded border border-dashed border-primary/40 bg-[#F3FBF5] px-3 py-2 text-xs text-ink">
+                  <p>
+                    Best size: <span className="font-bold">{meta.mobileRecommendedSize}</span>
+                  </p>
+                  <p className="mt-0.5 text-muted">{meta.mobileAspectHint}</p>
+                  <p className="mt-1 text-muted">Optional — blank ho to laptop wali image mobile pe use hogi.</p>
+                </div>
+                <div className="relative mx-auto mt-3 aspect-[4/5] max-w-[220px] overflow-hidden rounded border border-line bg-[#F3F6F4]">
+                  {mobilePreview ? (
+                    <Image
+                      src={mobilePreview}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      unoptimized={
+                        mobilePreview.includes("supabase") || mobilePreview.startsWith("data:")
+                      }
+                      sizes="220px"
+                    />
+                  ) : null}
+                  {uploading === "mobile" ? (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                      <Loader2 className="h-8 w-8 animate-spin text-white" />
+                    </div>
+                  ) : null}
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="button"
+                    disabled={uploading !== null}
+                    onClick={() => mobileInputRef.current?.click()}
+                    className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded bg-primary px-4 text-sm font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+                  >
+                    <ImagePlus className="h-4 w-4" />
+                    {uploading === "mobile" ? "Uploading…" : "Upload Mobile Banner"}
+                  </button>
+                  {draft.mobileImageUrl ? (
+                    <button
+                      type="button"
+                      onClick={() => setDraft((d) => ({ ...d, mobileImageUrl: "" }))}
+                      className="inline-flex h-10 items-center justify-center rounded border border-line px-3 text-sm text-muted hover:text-red-600"
+                      aria-label="Clear mobile banner"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  ) : null}
+                </div>
+                <input
+                  ref={mobileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                  className="hidden"
+                  onChange={(e) => void onUpload("mobile", e.target.files)}
                 />
               </div>
             </div>
@@ -327,12 +406,11 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
               </label>
             </div>
 
-            {/* Buttons */}
             <div className="rounded border border-line p-3 sm:p-4">
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-ink">Banner Buttons</h3>
-                  <p className="text-xs text-muted">1 se zyada buttons add kar sakte ho — har button ka apna URL.</p>
+                  <p className="text-xs text-muted">1 se zyada buttons — har button ka apna URL.</p>
                 </div>
                 <button
                   type="button"
@@ -346,7 +424,7 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
 
               <div className="mt-3 space-y-3">
                 {draft.buttons.length === 0 ? (
-                  <p className="text-xs text-muted">No buttons yet. Add at least one if you want CTAs.</p>
+                  <p className="text-xs text-muted">No buttons yet.</p>
                 ) : null}
                 {draft.buttons.map((btn, index) => (
                   <div key={index} className="rounded border border-line bg-[#F8FAF8] p-3">
@@ -387,9 +465,7 @@ export function AdminBannersPage({ initialBanners }: { initialBanners: SiteBanne
                         </select>
                       </label>
                       <label className="block sm:col-span-2">
-                        <span className="mb-1 block text-[11px] font-medium">
-                          URL (button dabane ke baad kahan jaye)
-                        </span>
+                        <span className="mb-1 block text-[11px] font-medium">URL</span>
                         <input
                           value={btn.href}
                           onChange={(e) => setButton(index, { href: e.target.value })}

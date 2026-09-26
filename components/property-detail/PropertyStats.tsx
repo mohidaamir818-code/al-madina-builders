@@ -31,7 +31,7 @@ export function PropertyStats({ stats, className }: PropertyStatsProps) {
   return (
     <ul
       className={cn(
-        "grid grid-cols-5 gap-1 rounded border border-[#CDE8D4] bg-[#EAF7EE] p-3 sm:gap-2 sm:p-4",
+        "grid grid-cols-3 gap-2 rounded border border-[#CDE8D4] bg-[#EAF7EE] p-3 sm:grid-cols-5 sm:gap-2 sm:p-4",
         className,
       )}
     >

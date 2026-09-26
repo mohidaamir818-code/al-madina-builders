@@ -2,6 +2,7 @@ import Image from "next/image";
 import { BadgeCheck, Handshake, Home, ShieldCheck } from "lucide-react";
 import type { SiteBanner } from "@/lib/admin/bannerStore";
 import { BannerCtaButtons } from "@/components/banners/BannerCtaButtons";
+import { resolveBannerImages } from "@/components/banners/BannerImages";
 import { Container } from "@/components/ui/Container";
 
 const badges = [
@@ -15,8 +16,12 @@ type PropertiesHeroProps = {
   banner?: SiteBanner | null;
 };
 
+function isRemote(src: string) {
+  return src.includes("supabase") || src.startsWith("data:");
+}
+
 export function PropertiesHero({ banner }: PropertiesHeroProps) {
-  const image = banner?.imageUrl || "/images/properties-hero.jpg";
+  const { desktop, mobile } = resolveBannerImages(banner, "/images/properties-hero.jpg");
   const eyebrow = banner?.eyebrow || "Premium Properties";
   const title = banner?.title?.trim() || "PROPERTIES";
   const showDefaultAccent = !banner?.title?.trim();
@@ -30,13 +35,13 @@ export function PropertiesHero({ banner }: PropertiesHeroProps) {
     <section className="relative isolate overflow-hidden bg-[#0B3B1E]">
       <div className="absolute inset-y-0 right-0 hidden w-[52%] lg:block">
         <Image
-          src={image}
+          src={desktop}
           alt="Properties page banner"
           fill
           priority
           sizes="52vw"
           className="object-cover object-center"
-          unoptimized={image.includes("supabase") || image.startsWith("data:")}
+          unoptimized={isRemote(desktop)}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B3B1E] via-[#0B3B1E]/55 to-transparent" />
       </div>
@@ -77,14 +82,14 @@ export function PropertiesHero({ banner }: PropertiesHeroProps) {
           {buttons.length ? <BannerCtaButtons buttons={buttons} className="mt-7" /> : null}
         </div>
 
-        <div className="relative mt-8 aspect-[16/10] overflow-hidden rounded-md lg:hidden">
+        <div className="relative mt-8 aspect-[4/5] overflow-hidden rounded-md sm:aspect-[16/10] lg:hidden">
           <Image
-            src={image}
+            src={mobile}
             alt="Properties page banner"
             fill
             sizes="100vw"
             className="object-cover"
-            unoptimized={image.includes("supabase") || image.startsWith("data:")}
+            unoptimized={isRemote(mobile)}
           />
           {script ? (
             <p className="font-script absolute top-4 right-4 text-3xl text-white">{script}</p>

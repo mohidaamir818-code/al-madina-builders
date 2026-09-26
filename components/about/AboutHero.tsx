@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { SiteBanner } from "@/lib/admin/bannerStore";
 import { BannerCtaButtons } from "@/components/banners/BannerCtaButtons";
+import { resolveBannerImages } from "@/components/banners/BannerImages";
 import { Container } from "@/components/ui/Container";
 
 type AboutHeroProps = {
@@ -9,7 +10,7 @@ type AboutHeroProps = {
 };
 
 export function AboutHero({ banner }: AboutHeroProps) {
-  const image = banner?.imageUrl || "/images/projects-hero.jpg";
+  const { desktop, mobile } = resolveBannerImages(banner, "/images/projects-hero.jpg");
   const title = banner?.title?.trim() || "ABOUT";
   const showDefaultAccent = !banner?.title?.trim();
   const eyebrow = banner?.eyebrow;
@@ -29,13 +30,13 @@ export function AboutHero({ banner }: AboutHeroProps) {
     <section className="relative overflow-hidden bg-[#0B3B1E]">
       <div className="absolute inset-y-0 right-0 z-0 hidden w-1/2 lg:block">
         <Image
-          src={image}
+          src={desktop}
           alt="About Us banner"
           fill
           priority
           sizes="50vw"
           className="object-cover object-center"
-          unoptimized={image.includes("supabase") || image.startsWith("data:")}
+          unoptimized={desktop.includes("supabase") || desktop.startsWith("data:")}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B3B1E] via-[#0B3B1E]/55 to-transparent" />
       </div>
@@ -76,14 +77,14 @@ export function AboutHero({ banner }: AboutHeroProps) {
           {buttons.length ? <BannerCtaButtons buttons={buttons} className="mt-6" /> : null}
         </div>
 
-        <div className="relative mt-8 aspect-[16/10] overflow-hidden rounded lg:hidden">
+        <div className="relative mt-8 aspect-[4/5] overflow-hidden rounded sm:aspect-[16/10] lg:hidden">
           <Image
-            src={image}
+            src={mobile}
             alt="About Us banner"
             fill
             sizes="100vw"
             className="object-cover"
-            unoptimized={image.includes("supabase") || image.startsWith("data:")}
+            unoptimized={mobile.includes("supabase") || mobile.startsWith("data:")}
           />
           {script ? (
             <p className="font-script absolute top-4 right-4 text-3xl leading-[1.05] text-white">{script}</p>

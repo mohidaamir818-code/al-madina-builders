@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Building2, HardHat, Home, RefreshCw } from "lucide-react";
 import type { SiteBanner } from "@/lib/admin/bannerStore";
 import { BannerCtaButtons } from "@/components/banners/BannerCtaButtons";
+import { resolveBannerImages } from "@/components/banners/BannerImages";
 import { Container } from "@/components/ui/Container";
 
 const badges = [
@@ -16,7 +17,7 @@ type ConstructionHeroProps = {
 };
 
 export function ConstructionHero({ banner }: ConstructionHeroProps) {
-  const image = banner?.imageUrl || "/images/construction-hero.jpg";
+  const { desktop, mobile } = resolveBannerImages(banner, "/images/construction-hero.jpg");
   const eyebrow = banner?.eyebrow || "Professional & Reliable";
   const title = banner?.title?.trim() || "CONSTRUCTION";
   const showDefaultAccent = !banner?.title?.trim();
@@ -30,13 +31,13 @@ export function ConstructionHero({ banner }: ConstructionHeroProps) {
     <section className="relative isolate overflow-hidden bg-[#0B3B1E]">
       <div className="absolute inset-y-0 right-0 hidden w-[54%] lg:block">
         <Image
-          src={image}
+          src={desktop}
           alt="Construction page banner"
           fill
           priority
           sizes="54vw"
           className="object-cover object-center"
-          unoptimized={image.includes("supabase") || image.startsWith("data:")}
+          unoptimized={desktop.includes("supabase") || desktop.startsWith("data:")}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B3B1E] via-[#0B3B1E]/60 to-transparent" />
       </div>
@@ -77,14 +78,14 @@ export function ConstructionHero({ banner }: ConstructionHeroProps) {
           {buttons.length ? <BannerCtaButtons buttons={buttons} className="mt-7" /> : null}
         </div>
 
-        <div className="relative mt-8 aspect-[16/10] overflow-hidden rounded lg:hidden">
+        <div className="relative mt-8 aspect-[4/5] overflow-hidden rounded sm:aspect-[16/10] lg:hidden">
           <Image
-            src={image}
+            src={mobile}
             alt="Construction page banner"
             fill
             sizes="100vw"
             className="object-cover"
-            unoptimized={image.includes("supabase") || image.startsWith("data:")}
+            unoptimized={mobile.includes("supabase") || mobile.startsWith("data:")}
           />
         </div>
       </Container>

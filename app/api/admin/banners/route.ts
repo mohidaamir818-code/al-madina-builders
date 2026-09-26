@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     const imageUrl = String(body.imageUrl || "").trim();
     if (!imageUrl) {
-      return NextResponse.json({ error: "Banner image is required." }, { status: 400 });
+      return NextResponse.json({ error: "Laptop / desktop banner image is required." }, { status: 400 });
     }
 
     const banner = await upsertSiteBanner({
@@ -51,6 +51,7 @@ export async function POST(request: Request) {
       eyebrow: String(body.eyebrow || ""),
       scriptText: String(body.scriptText || ""),
       imageUrl,
+      mobileImageUrl: String(body.mobileImageUrl || "").trim(),
       buttons: parseButtons(body.buttons),
       isActive: body.isActive !== false,
     });

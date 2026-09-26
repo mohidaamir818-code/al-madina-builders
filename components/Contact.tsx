@@ -103,11 +103,11 @@ export function Contact() {
                 </a>
               </li>
               <li>
-                <a href={`mailto:${site.email}`} className="inline-flex items-center gap-3 hover:text-primary-bright">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary">
+                <a href={`mailto:${site.email}`} className="inline-flex min-w-0 items-start gap-3 hover:text-primary-bright">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary">
                     <Mail className="h-4 w-4" aria-hidden="true" />
                   </span>
-                  {site.email}
+                  <span className="break-all">{site.email}</span>
                 </a>
               </li>
               <li className="inline-flex items-start gap-3">

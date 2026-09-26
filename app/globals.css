@@ -31,6 +31,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -44,6 +45,17 @@ body {
   color: var(--color-ink);
   font-family: var(--font-poppins), "Poppins", sans-serif;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Mobile: prevent iOS input zoom + tighten section rhythm */
+@media (max-width: 639px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
 
 /* Hide native scrollbars on snap carousels while keeping scroll */

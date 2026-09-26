@@ -55,23 +55,23 @@ export function Navbar() {
       )}
       aria-label="Primary"
     >
-      <Container className="flex h-16 items-center justify-between gap-4 md:h-[72px]">
-        <Link href="/" className="flex shrink-0 items-center gap-2 md:gap-3">
+      <Container className="flex h-14 items-center justify-between gap-2 sm:h-16 sm:gap-4 md:h-[72px]">
+        <Link href="/" className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
           <Image
             src="/logo-al-madina.png"
             alt="Al Madina Builders & Property Advisor logo"
             width={64}
             height={64}
             priority
-            className="h-14 w-14 shrink-0 rounded-full object-contain md:h-16 md:w-16"
+            className="h-10 w-10 shrink-0 rounded-full object-contain sm:h-14 sm:w-14 md:h-16 md:w-16"
           />
           <span
-            className={`${oswald.className} flex flex-col text-[15px] leading-[1.05] font-semibold tracking-wide text-[#0B3B1E] uppercase md:text-xl`}
+            className={`${oswald.className} flex min-w-0 flex-col text-[11px] leading-[1.1] font-semibold tracking-wide text-[#0B3B1E] uppercase sm:text-[15px] md:text-xl`}
           >
-            <span className="inline-block border-b-2 border-green-600 whitespace-nowrap">
+            <span className="truncate border-b-2 border-green-600 sm:whitespace-nowrap">
               AL MADINA BUILDERS &
             </span>
-            <span className="inline-block border-b-2 border-green-600 whitespace-nowrap">
+            <span className="truncate border-b-2 border-green-600 sm:whitespace-nowrap">
               PROPERTY ADVISOR
             </span>
           </span>
@@ -107,7 +107,7 @@ export function Navbar() {
 
         <button
           type="button"
-          className="rounded-md p-2 text-ink transition-colors duration-200 hover:bg-mint lg:hidden"
+          className="shrink-0 rounded-md p-2 text-ink transition-colors duration-200 hover:bg-mint lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -119,7 +119,7 @@ export function Navbar() {
 
       <div
         className={cn(
-          "fixed inset-0 top-16 z-40 bg-black/40 transition-opacity duration-200 lg:hidden",
+          "fixed inset-0 top-14 z-40 bg-black/40 transition-opacity duration-200 sm:top-16 lg:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={() => setOpen(false)}

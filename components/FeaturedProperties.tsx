@@ -71,14 +71,22 @@ export function FeaturedProperties({ listings }: FeaturedPropertiesProps) {
             onMouseLeave={() => {
               pausedRef.current = false;
             }}
-            className="no-scrollbar mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2"
+            onTouchStart={() => {
+              pausedRef.current = true;
+            }}
+            onTouchEnd={() => {
+              window.setTimeout(() => {
+                pausedRef.current = false;
+              }, 4000);
+            }}
+            className="no-scrollbar mt-10 -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:gap-5 sm:px-0"
           >
             {listings.map((property) => {
               const href = property.href || `/properties/${property.slug}`;
               return (
                 <article
                   key={`${property.type}-${property.slug}`}
-                  className="w-[82%] shrink-0 snap-start overflow-hidden rounded-md border border-line bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:w-[calc(50%-10px)] lg:w-[calc(25%-15px)]"
+                  className="w-[88%] max-w-[320px] shrink-0 snap-start overflow-hidden rounded-md border border-line bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:w-[calc(50%-10px)] sm:max-w-none lg:w-[calc(25%-15px)]"
                 >
                   <div className="relative aspect-[4/3]">
                     <Image

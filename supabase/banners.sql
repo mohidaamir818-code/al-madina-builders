@@ -9,6 +9,7 @@ create table if not exists public.site_banners (
   eyebrow text not null default '',
   script_text text not null default '',
   image_url text not null default '',
+  mobile_image_url text not null default '',
   buttons jsonb not null default '[]'::jsonb,
   is_active boolean not null default true,
   created_at timestamptz not null default now(),
