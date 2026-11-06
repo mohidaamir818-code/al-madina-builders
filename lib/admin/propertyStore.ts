@@ -313,10 +313,18 @@ function buildFromInput(input: AdminPropertyFormInput, prev?: AdminProperty): Om
 
 export async function listAdminProperties() {
   if (!isSupabaseConfigured()) return readFileStore();
-  const sb = getSupabaseAdmin();
-  const { data, error } = await sb.from("properties").select("*").order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data as DbRow[]).map(fromDb);
+  try {
+    const sb = getSupabaseAdmin();
+    const { data, error } = await sb.from("properties").select("*").order("created_at", { ascending: false });
+    if (error) {
+      console.warn("[propertyStore] Supabase read failed, using file store:", error.message);
+      return readFileStore();
+    }
+    return (data as DbRow[]).map(fromDb);
+  } catch (err) {
+    console.warn("[propertyStore] Supabase read error, using file store:", err);
+    return readFileStore();
+  }
 }
 
 export async function getAdminProperty(id: string) {
@@ -324,10 +332,20 @@ export async function getAdminProperty(id: string) {
     const items = await readFileStore();
     return items.find((p) => p.id === id) ?? null;
   }
-  const sb = getSupabaseAdmin();
-  const { data, error } = await sb.from("properties").select("*").eq("id", id).maybeSingle();
-  if (error) throw error;
-  return data ? fromDb(data as DbRow) : null;
+  try {
+    const sb = getSupabaseAdmin();
+    const { data, error } = await sb.from("properties").select("*").eq("id", id).maybeSingle();
+    if (error) {
+      console.warn("[propertyStore] Supabase read failed, using file store:", error.message);
+      const items = await readFileStore();
+      return items.find((p) => p.id === id) ?? null;
+    }
+    return data ? fromDb(data as DbRow) : null;
+  } catch (err) {
+    console.warn("[propertyStore] Supabase read error, using file store:", err);
+    const items = await readFileStore();
+    return items.find((p) => p.id === id) ?? null;
+  }
 }
 
 export async function getAdminPropertyBySlug(slug: string) {
@@ -335,14 +353,24 @@ export async function getAdminPropertyBySlug(slug: string) {
     const items = await readFileStore();
     return items.find((p) => p.slug === slug || p.publicSlug === slug || p.id === slug) ?? null;
   }
-  const sb = getSupabaseAdmin();
-  const { data, error } = await sb
-    .from("properties")
-    .select("*")
-    .or(`slug.eq.${slug},public_slug.eq.${slug},id.eq.${slug}`)
-    .maybeSingle();
-  if (error) throw error;
-  return data ? fromDb(data as DbRow) : null;
+  try {
+    const sb = getSupabaseAdmin();
+    const { data, error } = await sb
+      .from("properties")
+      .select("*")
+      .or(`slug.eq.${slug},public_slug.eq.${slug},id.eq.${slug}`)
+      .maybeSingle();
+    if (error) {
+      console.warn("[propertyStore] Supabase read failed, using file store:", error.message);
+      const items = await readFileStore();
+      return items.find((p) => p.slug === slug || p.publicSlug === slug || p.id === slug) ?? null;
+    }
+    return data ? fromDb(data as DbRow) : null;
+  } catch (err) {
+    console.warn("[propertyStore] Supabase read error, using file store:", err);
+    const items = await readFileStore();
+    return items.find((p) => p.slug === slug || p.publicSlug === slug || p.id === slug) ?? null;
+  }
 }
 
 export async function createAdminProperty(input: AdminPropertyFormInput) {
@@ -367,39 +395,47 @@ export async function createAdminProperty(input: AdminPropertyFormInput) {
 
   const sb = getSupabaseAdmin();
   const row = toDb(property);
-  const { data, error } = await sb.from("properties").insert(row).select("*").single();
-  if (error) {
-    // Older DBs may miss optional columns — strip and retry
-    let payload: Record<string, unknown> = { ...row };
-    if (/videos/i.test(error.message)) {
-      const { videos: _v, ...rest } = payload;
-      payload = rest;
-    }
-    if (/is_featured/i.test(error.message)) {
-      const { is_featured: _f, ...rest } = payload;
-      payload = rest;
-    }
-    if (payload !== row && Object.keys(payload).length) {
-      const retry = await sb.from("properties").insert(payload).select("*").single();
-      if (retry.error) {
-        let payload2 = { ...payload };
-        if (/videos/i.test(retry.error.message)) {
-          const { videos: _v, ...rest } = payload2;
-          payload2 = rest;
-        }
-        if (/is_featured/i.test(retry.error.message)) {
-          const { is_featured: _f, ...rest } = payload2;
-          payload2 = rest;
-        }
-        const retry2 = await sb.from("properties").insert(payload2).select("*").single();
-        if (retry2.error) throw new Error(retry2.error.message);
-        return fromDb(retry2.data as DbRow);
+  try {
+    const { data, error } = await sb.from("properties").insert(row).select("*").single();
+    if (error) {
+      // Older DBs may miss optional columns — strip and retry
+      let payload: Record<string, unknown> = { ...row };
+      if (/videos/i.test(error.message)) {
+        const { videos: _v, ...rest } = payload;
+        payload = rest;
       }
-      return fromDb(retry.data as DbRow);
+      if (/is_featured/i.test(error.message)) {
+        const { is_featured: _f, ...rest } = payload;
+        payload = rest;
+      }
+      if (payload !== row && Object.keys(payload).length) {
+        const retry = await sb.from("properties").insert(payload).select("*").single();
+        if (retry.error) {
+          let payload2 = { ...payload };
+          if (/videos/i.test(retry.error.message)) {
+            const { videos: _v, ...rest } = payload2;
+            payload2 = rest;
+          }
+          if (/is_featured/i.test(retry.error.message)) {
+            const { is_featured: _f, ...rest } = payload2;
+            payload2 = rest;
+          }
+          const retry2 = await sb.from("properties").insert(payload2).select("*").single();
+          if (retry2.error) throw new Error(retry2.error.message);
+          return fromDb(retry2.data as DbRow);
+        }
+        return fromDb(retry.data as DbRow);
+      }
+      throw new Error(error.message);
     }
-    throw new Error(error.message);
+    return fromDb(data as DbRow);
+  } catch (err) {
+    console.warn("[propertyStore] Supabase insert failed, using file store:", err);
+    const items = await readFileStore();
+    items.unshift(property);
+    await writeFileStore(items);
+    return property;
   }
-  return fromDb(data as DbRow);
 }
 
 export async function updateAdminProperty(id: string, input: AdminPropertyFormInput) {
@@ -423,9 +459,19 @@ export async function updateAdminProperty(id: string, input: AdminPropertyFormIn
   }
 
   const sb = getSupabaseAdmin();
-  const { data, error } = await sb.from("properties").update(toDb(updated)).eq("id", id).select("*").single();
-  if (error) throw error;
-  return fromDb(data as DbRow);
+  try {
+    const { data, error } = await sb.from("properties").update(toDb(updated)).eq("id", id).select("*").single();
+    if (error) throw error;
+    return fromDb(data as DbRow);
+  } catch (err) {
+    console.warn("[propertyStore] Supabase update failed, using file store:", err);
+    const items = await readFileStore();
+    const index = items.findIndex((p) => p.id === id);
+    if (index < 0) return null;
+    items[index] = updated;
+    await writeFileStore(items);
+    return updated;
+  }
 }
 
 export async function updateAdminPropertyBySlug(slug: string, input: AdminPropertyFormInput) {
@@ -443,9 +489,18 @@ export async function deleteAdminProperty(id: string) {
     return true;
   }
   const sb = getSupabaseAdmin();
-  const { error, count } = await sb.from("properties").delete({ count: "exact" }).eq("id", id);
-  if (error) throw error;
-  return (count || 0) > 0;
+  try {
+    const { error, count } = await sb.from("properties").delete({ count: "exact" }).eq("id", id);
+    if (error) throw error;
+    return (count || 0) > 0;
+  } catch (err) {
+    console.warn("[propertyStore] Supabase delete failed, using file store:", err);
+    const items = await readFileStore();
+    const next = items.filter((p) => p.id !== id);
+    if (next.length === items.length) return false;
+    await writeFileStore(next);
+    return true;
+  }
 }
 
 export async function countByStatus() {
