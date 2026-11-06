@@ -1,0 +1,13 @@
+
+> al-madina-builders@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://100.86.229.35:3000
+- Environments: .env.local
+✓ Ready in 4.1s
+✓ Running next.config.ts took 541ms
+
+ POST /api/admin/login 502 in 7.4s (next.js: 1528ms, application-code: 5.9s)
+ POST /api/admin/login 502 in 2.8s (next.js: 58ms, application-code: 2.7s)
